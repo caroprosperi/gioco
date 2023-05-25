@@ -13,7 +13,7 @@ class Paddle(pygame.sprite.Sprite):
         # Set the background color and set it to be transparent
         self.image = pygame.Surface([width, height])
         self.image.fill(BLACK)
-        self.image.set_colorkey(BLACK)
+        #self.image.set_colorkey(BLACK)
 
         # Draw the paddle (a rectangle!)
         pygame.draw.rect(self.image, color, [0, 0, width, height])
@@ -24,14 +24,14 @@ class Paddle(pygame.sprite.Sprite):
     def moveLeft(self, pixels):
         self.rect.x -= pixels
         # Check that you are not going too far (off the screen)
-        if self.rect.x < 0:
-            self.rect.x = 0
+        if self.rect.right < 0:
+            self.rect.right = 0
 
     def moveRight(self, pixels):
         self.rect.x += pixels
         # Check that you are not going too far (off the screen)
-        if self.rect.x > 400:
-            self.rect.x = 400
+        if self.rect.right > 400:
+            self.rect.right = 400
 
     def draw(self, surf):
         surf.blit(self.image, self.rect)

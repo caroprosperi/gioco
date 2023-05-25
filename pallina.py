@@ -53,7 +53,7 @@ class Ball(pygame.sprite.Sprite):
         if randint(0,1) == 0:
             self.velocity[0] = randint(5,8)
         else:
-            self.velocity[0] = randint(-5,-8)
+            self.velocity[0] = randint(-8,-5)
 
         self.velocity[1] = -self.velocity[1]
 

@@ -2,8 +2,8 @@
 
 # Import the pygame library and initialise the game engine
 import pygame
-from base import Paddle
-from pallina import Ball
+from paddle import Paddle
+from ball import Ball
 
 pygame.init()
 
