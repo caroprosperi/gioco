@@ -2,6 +2,7 @@ import pygame, sys
 from pygame.locals import *
 from pallina import Ball
 from base import Paddle
+from random import randint 
 
 #parametri finestra 
 screen_height = 400
@@ -32,6 +33,18 @@ margineblocchi = 2
 colori = [(224,175,238	), (94,134,193),(227,11,92),(222, 4, 4), (99,151,208) ]
 pos_iniziali= [-10, -30, -43, -25, -14]
 
+ball = Ball(colore_ball, 2*r, 2*r)
+ball.rect.x = posizione_ball_x
+ball.rect.y = posizione_ball_y
+
+paddleA = Paddle(colore_ball, 10, 100) #---> cambio colore paddle 
+paddleA.rect.x = 300
+paddleA.rect.y = 320
+
+
+
+all_sprites_list = pygame.sprite.Group()
+all_sprites_list.add(ball)
 # ciclo fondamentale
 while True:
     
@@ -41,8 +54,7 @@ while True:
             pygame.quit()
             sys.exit()
     
-    #funzione che serve per rigenerare lo schermo ad ogni giro del ciclo 
-    screen.fill("white")
+   
     
     #parametri blocchi variabili 
     pos_x =50
@@ -56,14 +68,25 @@ while True:
             pygame.draw.rect(screen, colore, (last_block_x + lunghezza+ margineblocchi, pos_y, lunghezza, altezza))
             last_block_x = last_block_x + lunghezza + margineblocchi
     
-    #if che verifica se la pallina si trova all'interno della finestra oppure no, se è all'interno si può disegnare
-    #se invece non è all'interno la pallina non può essere disegnata 
-    if posizione_ball_x + r < screen_length and posizione_ball_y + r < screen_height:
-        
-        pygame.draw.circle(screen, colore_ball, (posizione_ball_x,posizione_ball_y), r)
-        posizione_ball_x += velocità_ball
+    all_sprites_list.update()
     
+    if ball.rect.right >= screen_length:
+        ball.velocity[0] = -ball.velocity[0]
+    if ball.rect.x <= 0:
+        ball.velocity[0] = -ball.velocity[0]
+    # if ball.rect.y > 490:
+    if ball.rect.bottom > screen_length:
+        ball.velocity[1] = -ball.velocity[1]
+    if ball.rect.y < 0:
+        ball.velocity[1] = -ball.velocity[1]    
     
+     #funzione che serve per rigenerare lo schermo ad ogni giro del ciclo 
+    screen.fill("white")
+    
+    ball.draw(screen)
+    
+    pygame.display.flip()
+
             
 # qui aggiorno lo schermo con i disegni messi da fare
     pygame.display.update()
