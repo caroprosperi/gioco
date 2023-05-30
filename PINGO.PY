@@ -6,7 +6,7 @@ from random import randint
 from blocco import Block
 
 #parametri finestra 
-screen_height = 400
+screen_height = 600
 screen_length = 600
 
 # settaggi base finestra
@@ -21,7 +21,7 @@ fps = 60
 
 #parametri della pallina
 posizione_ball_x = 290
-posizione_ball_y = 300
+posizione_ball_y = 420
 velocità_ball = 10
 r =  10
 colore_ball= (255,0,0)
@@ -40,9 +40,8 @@ ball.rect.y = posizione_ball_y
 
 paddleA = Paddle(colore_ball, 100, 10 ) #---> cambio colore paddle 
 paddleA.rect.x = 300
-paddleA.rect.y = 330
+paddleA.rect.y = 450
 
-  
 
 #parametri blocchi variabili 
 pos_x =50
@@ -93,7 +92,7 @@ while True:
         ball.velocity[1] = 0
         ball.velocity[0] = 0
         paddleA.rect.x = 250 #--> modifico metto parametri
-        paddleA.rect.y = 330
+        paddleA.rect.y = 450
         ball.rect.x = posizione_ball_x
         ball.rect.y = posizione_ball_y
         
@@ -104,7 +103,7 @@ while True:
         ball.bounce()
     for blocco in listaBlocchi:
         if pygame.sprite.collide_mask(ball,blocco):
-            
+            ball.bounce()
         
     
      #funzione che serve per rigenerare lo schermo ad ogni giro del ciclo 
