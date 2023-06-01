@@ -35,3 +35,4 @@ class Pallina(pygame.sprite.Sprite):
 
     def draw(self, surf):
         surf.blit(self.image, self.rect)
+        

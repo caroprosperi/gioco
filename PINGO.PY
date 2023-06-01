@@ -5,6 +5,7 @@ from base import Base
 from bottone import Bottone
 from random import randint 
 
+#classe blocco  
 class Blocco(pygame.sprite.Sprite):
     def __init__(self, color, width, height):
         super().__init__()
@@ -21,6 +22,8 @@ class Blocco(pygame.sprite.Sprite):
 
     def draw(self, surf):
         surf.blit(self.image, self.rect)
+        
+        
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -54,6 +57,11 @@ ball.rect.y = posizione_ball_y
 #controllo stop pallina
 click=0
 
+tolleranza = 6
+
+#punti
+punti = 0
+
 #parametri base
 paddleA = Base(colore_ball, 100, 10 ) #---> cambio colore paddle 
 paddleA.rect.x = 300
@@ -71,6 +79,7 @@ pos_vite_x = 450
 pos_vite_y = 560
 vite_image = pygame.transform.scale(vite_image, (50, 50))
 
+
 #immagine game over 
 game_over = pygame.image.load('gameover.png')
 pos_over_x = 150
@@ -85,10 +94,13 @@ margineblocchi = 2
 colori = [(224,175,238	), (94,134,193),(227,11,92),(222, 4, 4), (99,151,208) ]
 pos_iniziali= [-10, -30, -43, -25, -14]
 
+
+
 #parametri blocchi variabili 
 pos_x =50
 pos_y = 0
 listaBlocchi= []
+
 
 #comandi per creare e posizionare i blocchi sullo schermo 
 for colore, pos_iniziale in zip(colori, pos_iniziali):
@@ -178,33 +190,70 @@ while True:
         pygame.display.flip()
         pygame.time.wait(3000)
         vite = 3 
+
+
+
+
+    #comandi per riavviare la partita 
+        
+        #parametri blocchi variabili 
+        pos_x =50
+        pos_y = 0
+        listaBlocchi= []
+        #comandi per creare e posizionare i blocchi sullo schermo 
+        for colore, pos_iniziale in zip(colori, pos_iniziali):
+            pos_y += altezza + margineblocchi
+            last_block_x = pos_iniziale
+            while last_block_x + lunghezza< screen_length- marginefinale:
+                b = Blocco(colore, lunghezza, altezza)
+                listaBlocchi.append(b)
+                b.rect.x = last_block_x + lunghezza + margineblocchi
+                b.rect.y = pos_y + altezza + margineblocchi
+                last_block_x = last_block_x + lunghezza + margineblocchi
+
+        all_sprites_list = pygame.sprite.Group()
+        all_sprites_list.add(ball)
+        all_sprites_list.add(paddleA)
+        for blocco in listaBlocchi:
+            all_sprites_list.add(blocco)
+
         
         
         
-                        
+        
+        
+        
     if ball.rect.y < 0:
         ball.velocity[1] = -ball.velocity[1]    
-        
+    
+
     if pygame.sprite.collide_mask(ball, paddleA):
         ball.bounce()
-    for blocco in listaBlocchi:
+    for i, blocco in enumerate(listaBlocchi):
         if pygame.sprite.collide_mask(ball,blocco):
-            
-            
-            ball.bounce()
+            blocco.kill()
+            listaBlocchi.remove(blocco)
+            if ball.rect.y >= blocco.rect.bottom - tolleranza:
+                ball.velocity[1] = -ball.velocity[1]  
+            elif ball.rect.bottom <= blocco.rect.y + tolleranza:
+                ball.velocity[1] = -ball.velocity[1]  
+            elif ball.rect.right <= blocco.rect.x + tolleranza:
+                ball.velocity[0] = -ball.velocity[0]  
+            elif ball.rect.x >= blocco.rect.right - tolleranza:
+                ball.velocity[0] = -ball.velocity[0]  
+                
 
-    
-  
-    
-   
-
-    
-    
+    #disegno pallina
     ball.draw(screen)
-    paddleA.draw(screen)
-    for blocco in listaBlocchi:
-        blocco.draw(screen)
     
+    #disegno base
+    paddleA.draw(screen)
+    
+    #disegno blocchi 
+    for i, blocco in enumerate(listaBlocchi):
+        blocco.draw(screen)
+
+    #disegno bottoni 
     bottone.draw(screen)
     
     pygame.display.flip()
