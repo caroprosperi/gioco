@@ -3,7 +3,8 @@ from random import randint
  
 BLACK = (0, 0, 0)
 
-
+#abbiamo messo la classe blocco nel main perchè importandola da un'altro file ci dava dei problemi
+#questa è la classe Blocco su un file separato dal main  
 class Blocco(pygame.sprite.Sprite):
     def __init__(self, color, width, height):
         super().__init__()
