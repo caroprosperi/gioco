@@ -5,9 +5,26 @@ from base import Base
 from bottone import Bottone
 from random import randint 
 
+class Blocco(pygame.sprite.Sprite):
+    def __init__(self, color, width, height):
+        super().__init__()
+            
+        #set sfondo a trasparente
+        self.image = pygame.Surface([width, height])
+
+        #disegna rettangolo
+        pygame.draw.rect(self.image, color, [0,0, width, height])
+        
+        self.velocity = [0,0]
+        
+        self.rect = self.image.get_rect()
+
+    def draw(self, surf):
+        surf.blit(self.image, self.rect)
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
+
 #parametri finestra 
 screen_height = 600
 screen_length = 600
@@ -29,31 +46,24 @@ velocità_ball = 10
 r =  10
 colore_ball= (255,0,0)
 
-
-BLACK = (0, 0, 0)
-
-
-class Blocco(pygame.sprite.Sprite):
-    def __init__(self, color, width, height):
-        super().__init__()
-            
-        #set sfondo a trasparente
-        self.image = pygame.Surface([width, height])
-
-        #disegna rettangolo
-        pygame.draw.rect(self.image, color, [0,0, width, height])
-        
-        self.velocity = [0,0]
-        
-        self.rect = self.image.get_rect()
-
-    def draw(self, surf):
-        surf.blit(self.image, self.rect)
+#parametri pallina
+ball = Pallina(colore_ball, 2*r, 2*r)
+ball.rect.x = posizione_ball_x
+ball.rect.y = posizione_ball_y
 
 #controllo stop pallina
-click =0
-
 click=0
+
+#parametri base
+paddleA = Base(colore_ball, 100, 10 ) #---> cambio colore paddle 
+paddleA.rect.x = 300
+paddleA.rect.y = 450
+
+#parametri bottone
+pos = (270, 550)
+bottone = Bottone('Red', 40, 40, pos)
+p = False
+
 #parametri dei blocchi 
 lunghezza = 50
 altezza = 25
@@ -66,21 +76,6 @@ pos_iniziali= [-10, -30, -43, -25, -14]
 pos_x =50
 pos_y = 0
 listaBlocchi= []
-
-#parametri pallina
-ball = Pallina(colore_ball, 2*r, 2*r)
-ball.rect.x = posizione_ball_x
-ball.rect.y = posizione_ball_y
-
-#parametri base
-paddleA = Base(colore_ball, 100, 10 ) #---> cambio colore paddle 
-paddleA.rect.x = 300
-paddleA.rect.y = 450
-
-#parametri bottone
-pos = (270, 550)
-bottone = Bottone('Red', 40, 40, pos)
-p = False
 
 #comandi per creare e posizionare i blocchi sullo schermo 
 for colore, pos_iniziale in zip(colori, pos_iniziali):
@@ -108,9 +103,7 @@ while True:
             pygame.quit()
             sys.exit()
     
-    
-            
-    
+    #comandi per 
     if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3 and bottone.rect.collidepoint(mouse):
             ball.velocity[0] = randint(-5, 5)
             while ball.velocity[0] ==0:
@@ -138,7 +131,6 @@ while True:
         paddleA.moveRight(5)
     if keys[pygame.K_LEFT]:
         paddleA.moveLeft(5)
-
     
     all_sprites_list.update()
     
@@ -164,8 +156,7 @@ while True:
         if pygame.sprite.collide_mask(ball,blocco):
             ball.bounce()
         
-    
-     #funzione che serve per rigenerare lo schermo ad ogni giro del ciclo 
+    #funzione che serve per rigenerare lo schermo ad ogni giro del ciclo 
     screen.fill(BLACK)
     
     ball.draw(screen)
@@ -176,5 +167,5 @@ while True:
     bottone.draw(screen)
     
     pygame.display.flip()
-    # aspetto il prossmo frame
+    # aspetto il prossimo frame
     clock.tick(fps)
