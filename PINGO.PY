@@ -32,7 +32,7 @@ screen_length = 600
 # settaggi base finestra
 WINDOW_SIZE = (screen_length, screen_height)
 screen = pygame.display.set_mode(WINDOW_SIZE, 0, 32)
-pygame.display.set_caption('Finestra Base')
+pygame.display.set_caption("Pingo")
 screen.fill(WHITE)
 
 # clock per temporizzare il programma
@@ -64,6 +64,19 @@ pos = (270, 550)
 bottone = Bottone('Red', 40, 40, pos)
 p = False
 
+#immagine vite 
+vite_image = pygame.image.load('cuore.png')
+vite = 3
+pos_vite_x = 450
+pos_vite_y = 560
+vite_image = pygame.transform.scale(vite_image, (50, 50))
+
+#immagine game over 
+game_over = pygame.image.load('gameover.png')
+pos_over_x = 150
+pos_over_y = 120
+game_over = pygame.transform.scale(game_over, (300, 300))
+
 #parametri dei blocchi 
 lunghezza = 50
 altezza = 25
@@ -84,7 +97,7 @@ for colore, pos_iniziale in zip(colori, pos_iniziali):
     while last_block_x + lunghezza< screen_length- marginefinale:
         b = Blocco(colore, lunghezza, altezza)
         listaBlocchi.append(b)
-        b.rect.x = last_block_x + lunghezza+ margineblocchi
+        b.rect.x = last_block_x + lunghezza + margineblocchi
         b.rect.y = pos_y + altezza + margineblocchi
         last_block_x = last_block_x + lunghezza + margineblocchi
 
@@ -102,8 +115,9 @@ while True:
         if event.type == QUIT:
             pygame.quit()
             sys.exit()
+     
     
-    #comandi per 
+    #comandi per bottone 
     if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3 and bottone.rect.collidepoint(mouse):
             ball.velocity[0] = randint(-5, 5)
             while ball.velocity[0] ==0:
@@ -125,15 +139,18 @@ while True:
                 ball.rect.y = posizione_ball_y
             if ball.rect.y < 0:
                 ball.velocity[1] = -ball.velocity[1]  
-            
+    
+    #movimento paddle 
     keys = pygame.key.get_pressed()
     if keys[pygame.K_RIGHT]:
-        paddleA.moveRight(5)
+        paddleA.moveRight(8)
     if keys[pygame.K_LEFT]:
-        paddleA.moveLeft(5)
-    
+        paddleA.moveLeft(8)
+        
+     #funzione che serve per rigenerare lo schermo ad ogni giro del ciclo 
+    screen.fill(BLACK)
     all_sprites_list.update()
-    
+    #controlli su collisioni pallina e rimbalzo 
     if ball.rect.right >= screen_length:
         ball.velocity[0] = -ball.velocity[0]
     if ball.rect.x <= 0:
@@ -146,7 +163,25 @@ while True:
         paddleA.rect.y = 450
         ball.rect.x = posizione_ball_x
         ball.rect.y = posizione_ball_y
+        vite -= 1
+    if vite == 3:
+        screen.blit(vite_image, (pos_vite_x, pos_vite_y))
+        screen.blit(vite_image, (pos_vite_x+ 40, pos_vite_y))
+        screen.blit(vite_image, (pos_vite_x+ 80 , pos_vite_y))
+    elif vite == 2:
+        screen.blit(vite_image, (pos_vite_x, pos_vite_y))
+        screen.blit(vite_image, (pos_vite_x+ 40, pos_vite_y))            
+    elif vite == 1:
+        screen.blit(vite_image, (pos_vite_x, pos_vite_y))
+    if vite == 0:
+        screen.blit(game_over, (pos_over_x, pos_over_y))
+        pygame.display.flip()
+        pygame.time.wait(3000)
+        vite = 3 
         
+        
+        
+                        
     if ball.rect.y < 0:
         ball.velocity[1] = -ball.velocity[1]    
         
@@ -154,10 +189,16 @@ while True:
         ball.bounce()
     for blocco in listaBlocchi:
         if pygame.sprite.collide_mask(ball,blocco):
+            
+            
             ball.bounce()
-        
-    #funzione che serve per rigenerare lo schermo ad ogni giro del ciclo 
-    screen.fill(BLACK)
+
+    
+  
+    
+   
+
+    
     
     ball.draw(screen)
     paddleA.draw(screen)
