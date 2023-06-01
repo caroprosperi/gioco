@@ -4,25 +4,21 @@ from random import randint
 BLACK = (0, 0, 0)
 
 
-class Ball(pygame.sprite.Sprite):
-    #This class represents a ball. It derives from the "Sprite" class in Pygame.
+class Pallina(pygame.sprite.Sprite):
     
     def __init__(self, color, width, height):
-        # Call the parent class (Sprite) constructor
         super().__init__()
         
-        # Pass in the color of the ball, its width and height.
-        # Set the background color and set it to be transparent
+        #set sfondo a trasparente
         self.image = pygame.Surface([width, height])
         self.image.fill(BLACK)
         self.image.set_colorkey(BLACK)
  
-        # Draw the ball (a rectangle!)
+        #disegna cerchio
         pygame.draw.circle(self.image, color, [width/2, height/2], width/2)
         
-        self.velocity = [randint(6,8),randint(-8,8)]
+        self.velocity = [randint(6,8),randint(-8,-1)]
         
-        # Fetch the rectangle object that has the dimensions of the image.
         self.rect = self.image.get_rect()
         
     def update(self):
